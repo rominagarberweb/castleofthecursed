@@ -2,32 +2,57 @@
 <html>
 <head>
 <title>Castle of the Cursed</title>
-<meta name="description" content="The House is Always Hungry. After losing her parents in a public tragedy, a grieving Estela moves overseas to live with an estranged aunt at their ancestral castle in Spain—but beneath its public facade, la Sombra harbors a trove of family secrets. As the mysteries pile up, Estela begins to suspect her parents&amp;#39; deaths may be linked to their past… and their murderer is closer than she realized.">
+<meta name="description" content="The House is Always Hungry. After losing her parents in a public tragedy, a grieving Estela moves overseas to live with an estranged aunt at their ancestral castle in Spain—but beneath its public facade, la Sombra harbors a trove of family secrets.">
+  <!-- 3D Book borrowed from https://www.elated.com/articles/rotatable-3d-product-boxshot-threejs/ -->
 <script type="text/javascript" src="js/three.js"></script>
 <script type="text/javascript" src="js/OrbitControls.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rominagarberweb/rominagarber@main/web/_includes/style.css">
-
+<style>
+  body {
+    max-width: 800px;
+    background-color:var(--rho-aquarius-1, #D9C0DE);
+    margin-right: auto;
+    margin-left: auto;
+    color: var(--rho-aquarius-3);
+  }
+  canvas {
+    display:block;
+    outline: none;
+  }
+  .preorder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+    margin-bottom: 2rem;
+  }
+  .book-actions {
+    justify-content: center;
+  }
+</style>
 <script type="text/javascript">
 
 window.onload = function() {
 
-  // Create the renderer and add it to the page's body element
+  // Create the renderer and add it to the div with the id of book
   var renderer = new THREE.WebGLRenderer( { alpha: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  const targetElement = document.getElementById('book');
-  targetElement.appendChild(renderer.domElement );
+  // renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize(400, 1000);
+  const targetElement = document.getElementById('Canvas');
   // document.body.appendChild( renderer.domElement );
+  targetElement.appendChild(renderer.domElement);
 
   // Create the scene to hold the object
   var scene = new THREE.Scene();
 
   // Create the camera
   var camera = new THREE.PerspectiveCamera(
-    35,                                     // Field of view
-    window.innerWidth / window.innerHeight, // Aspect ratio
+    40,                                     // Field of view
+    // window.innerWidth / window.innerHeight, // Aspect ratio
+    360 / 800,
     0.1,                                    // Near plane distance
-    1000                                    // Far plane distance
+    1000                                  // Far plane distance
   );
 
   // Position the camera
@@ -116,16 +141,48 @@ window.onload = function() {
 </script>
 </head>
 
-<body style="background-color:var(--rho-aquarius-1, #D9C0DE)">
-
+<body>
 <header style="padding: 20px;">
-  <p>Romina Garber | Castle of the Cursed</p>
+  <p><a href="https://rominagarber.com/books/castle-of-the-cursed/">Romina Garber</a> | <em>Castle of the Cursed</em></p>
 </header>
-<div id="book"></div>
-<div class="book-actions">
-  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://www.goodreads.com/en/book/show/61304866" rel="noopener">Add to Goodreads</a>
+<div id="Canvas" style="
+  display: flex;
+  justify-content: center;
+  margin-top: -200px;
+  margin-bottom: -200px;
+  "
+></div>
+<div class="preorder">
+  <div data-menu-component="">
+    <input type="checkbox" role="button" aria-haspopup="true" id="toggle" class="vh btn">
+    <label for="toggle" class="btn btn--featured-book" style="background-color: #734a85; border-color: #734a85; color: #fff;" data-opens-menu="">
+      Pre-order today! <svg class="download-icon" width="16" height="8" viewBox="0 0 16 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L7.97059 7L14.9412 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span class="vh expanded-text">expanded</span>
+      <span class="vh collapsed-text">collapsed</span>
+    </label>
+    <div role="menu" data-menu-origin="left">
+      <ul style="background-color: #d9c0de; border: 2px solid #734a85;">
+        <li><a style="color: #734a85;" href="https://www.barnesandnoble.com/w/castle-of-the-cursed-romina-garber/1143881728" rel="noopener nofollow">Barnes &amp; Noble
+        </a></li>
+        <li><a style="color: #734a85;" href="https://www.amazon.com/dp/1250863899?tag=smprdcastleofthecursedlpgb-20" rel="noopener nofollow">Amazon
+        </a></li>
+        <li><a style="color: #734a85;" href="https://www.booksamillion.com/product/9781250863898" rel="noopener nofollow">BAM!   
+        </a></li>
+        <li><a style="color: #734a85;" href="https://bookshop.org/p/books/castle-of-the-cursed-romina-garber/20344537?ean=9781250863898" rel="noopener nofollow">Bookshop
+        </a></li>
+      </ul>
+    </div>
+  </div>
+  <p style="font-size:smaller; margin-top: 0;">Available <time datetime="2014-07-30">July 30<sup>th</sup> 2024</time></p>
 </div>
-
+<div class="book-actions">
+  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="#" rel="noopener">Read an excerpt</a>
+  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://www.goodreads.com/en/book/show/61304866" rel="noopener">Add to Goodreads</a>
+  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://cdn.sanity.io/images/hic407cy/production/ef4b74fa8a8fda4c5bda930f3a0a5fa49d0b2f70-1875x2849.jpg?dl=book-cover.jpg" rel="noopener">Download large cover image</a>
+  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://rominagarber.com/books/castle-of-the-cursed/" rel="noopener">Visit Romina&rsquo;s Site</a>
+</div>
 </body>
 
 </html>
