@@ -29,6 +29,32 @@
   .book-actions {
     justify-content: center;
   }
+  /* Styles for users who prefer dark mode at the OS level */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--general-night-5);
+    color: var(--general-night-2);
+  }
+  img,
+  svg,
+  picture {
+    filter: brightness(.7) contrast(1.2);
+  }
+
+  svg.social-icon {
+    filter: brightness(1.4);
+  }
+
+  img:hover,
+  svg:hover,
+  picture:hover {
+    filter: brightness(.9) contrast(1.1);
+  }
+  blockquote p {
+    color: var(--general-night-2);
+  }
+}
+
 </style>
 <script type="text/javascript">
 
