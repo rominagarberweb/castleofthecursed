@@ -15,7 +15,9 @@ window.onload = function() {
   var renderer = new THREE.WebGLRenderer( { alpha: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
-  document.body.appendChild( renderer.domElement );
+  const targetElement = document.getElementById('book');
+  targetElement.appendChild(renderer.domElement );
+  // document.body.appendChild( renderer.domElement );
 
   // Create the scene to hold the object
   var scene = new THREE.Scene();
@@ -114,11 +116,14 @@ window.onload = function() {
 </script>
 </head>
 
-<body>
+<body style="background-color:var(--rho-aquarius-1, #D9C0DE)">
 
-<div style="padding: 20px; position: absolute;">
+<header style="padding: 20px;">
   <p>Romina Garber | Castle of the Cursed</p>
-  <!-- <p>&copy; Elated.com | <a href="https://www.elated.com/articles/rotatable-3d-product-boxshot-threejs/">Back to Tutorial</a></p> -->
+</header>
+<div id="book"></div>
+<div class="book-actions">
+  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://www.goodreads.com/en/book/show/61304866" rel="noopener">Add to Goodreads</a>
 </div>
 
 </body>
