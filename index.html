@@ -18,15 +18,31 @@
 <script type="text/javascript" src="js/OrbitControls.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rominagarberweb/rominagarber@main/web/_includes/style.css">
 <style>
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     max-width: 800px;
     background-color:var(--rho-aquarius-1, #D9C0DE);
     margin-right: auto;
     margin-left: auto;
     color: var(--rho-aquarius-3);
+    padding-inline: 1rem;
   }
   header {
     z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-block: 20px;
+  }
+  header h1 {
+    font-size: var(--font-size-md);
+  }
+  blockquote {
+    border-left: 6px solid var(--rho-aquarius-3);
+    padding: 1rem;
+    font-weight: 700;
   }
   canvas {
     display:block;
@@ -39,15 +55,23 @@
     align-items: center;
     gap: 0px;
     margin-bottom: 2rem;
-    z-index: 501;
+    z-index: 502;
   }
   .book-actions {
     justify-content: center;
-    z-index: 502;
+    z-index: 501;
+  }
+  #Preorder,
+  #Excerpt {
+    scroll-margin-top: 2rem;
+  }
+  .end-mark {
+    text-align: center;
+    font-weight: bold;
   }
   /* Styles for users who prefer dark mode at the OS level */
-@media (prefers-color-scheme: dark) {
-  body {
+  @media (prefers-color-scheme: dark) {
+    body {
     background-color: var(--general-night-5);
     color: var(--general-night-2);
   }
@@ -84,6 +108,7 @@ window.onload = function() {
   const targetElement = document.getElementById('Canvas');
   // document.body.appendChild( renderer.domElement );
   targetElement.appendChild(renderer.domElement);
+  targetElement.setAttribute('alt', 'This is a 3D rendering of a book');
 
   // Create the scene to hold the object
   var scene = new THREE.Scene();
@@ -184,17 +209,18 @@ window.onload = function() {
 </head>
 
 <body>
-<header style="padding: 20px;">
-  <p><a href="https://rominagarber.com/books/castle-of-the-cursed/">Romina Garber</a> | <em>Castle of the Cursed</em></p>
+<header id="Top">
+  <h1>Romina Garber's <em>Castle of the Cursed</em></h1>
+  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="#Excerpt" rel="noopener">Read an excerpt</a>
 </header>
 <div id="Canvas" style="
   display: flex;
   justify-content: center;
-  margin-top: -200px;
+  margin-top: -260px;
   margin-bottom: -200px;
   "
 ></div>
-<div class="preorder">
+<div class="preorder" id="Preorder">
   <div data-menu-component="">
     <input type="checkbox" role="button" aria-haspopup="true" id="toggle" class="vh btn">
     <label for="toggle" class="btn btn--featured-book" style="background-color: #734a85; border-color: #734a85; color: #fff;" data-opens-menu="">
@@ -220,10 +246,70 @@ window.onload = function() {
   <p style="font-size:smaller; margin-top: 0;">Available <time datetime="2014-07-30">July 30<sup>th</sup> 2024</time></p>
 </div>
 <div class="book-actions">
-  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="#" rel="noopener">Read an excerpt</a>
+
   <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://www.goodreads.com/en/book/show/61304866" rel="noopener">Add to Goodreads</a>
   <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://cdn.sanity.io/images/hic407cy/production/ef4b74fa8a8fda4c5bda930f3a0a5fa49d0b2f70-1875x2849.jpg?dl=book-cover.jpg" rel="noopener">Download large cover image</a>
   <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://rominagarber.com/books/castle-of-the-cursed/" rel="noopener">Visit Romina&rsquo;s Site</a>
+</div>
+<p class="end-mark">⛫</p>
+
+<div id="Excerpt">
+  <h2>Prologue</h2>
+  <p>7 MONTHS AGO</p>
+  <blockquote>TENDRILS OF BLACK SMOKE COIL around the metal poles of the subway train.</blockquote> 
+  <p>I blink. They’re gone.</p> 
+  <p>We lurch forward, and I count twenty-six passengers, including us. Ages range from seventeen (me) to over eighty (old man behind Dad). </p> 
+  <p>My parents and I ride standing, as do two women in crisp suits too clean for the colorless seats. A party of German tourists has taken over one end of the compartment, reeking of beer and tobacco. Four teen girls in pleated uniforms sit on the bench across from me, huddled close and speaking in whispers. </p> 
+  <p>My gaze lingers on the students, and I wonder if I would be happy with their lives. Would I enjoy waking up every day to the same outfit, same rou- tine, same bedroom—? </p> 
+  <p>“Who are they?” asks Dad. </p> 
+  <p>Arching my neck, I spy the names of the textbooks peeking out from a star-studded bag: Physics, Calculus, U.S. Government.</p>  
+  <p>“Seniors.”</p> 
+  <p>“That’s all you got?”</p> 
+  <p>Dad sounds like he wants a challenge, so I stare harder. The students are glued to the same phone screen, which one of them holdvertically, at an awkward viewing angle. I follow the camera’s trajectory to the other end of the train, where two people are making out.</p> 
+  <p>“They’re recording that couple over there—” </p>
+  <p>I fall silent as one of the girls looks up and her gaze grazes mine. I’m struck by the darkness of her irises. They’re pitch black. </p>
+  <p>She keeps looking around, as if searching for an escape route. Unlike her friends, she hasn’t adorned herself with jewelry or makeup, anshe seems more concerned with the phone than the couple it’s recording. The device is an outdated model with a single camera lens. </p>
+  <p>“They’re using the black-eyed girl’s phone,” I theorize to Dad in a low reg- ister, my voice barely audible. “Maybe some kind of sociatest. Could be the other three haven’t accepted her yet.” </p>
+  <p>I glance at Dad to see how I’m doing. His bushy brow dips as he winks his approval, and my lips stretch into a grin. </p>
+  <p>“She comes from a Dominican family,” he says under his breath, “and her mother is employed by the school, so it’s likely she’s worrieabout getting in trouble.” He must see my confusion because he adds, “On the platform, I overheard her speaking with her mother in Spanish othat very cell phone.” </p>
+  <p>I cross my arms, irritation singeing my cheeks. “Rules of the game are no prior information, and besides—” </p>
+  <p>“Train platform counts as part of the scene—” </p>
+  <p>“You won’t teach me Spanish!” I speak over him. “You and Mom just want to keep it as your secret language—!” </p>
+  <p>“Aren’t you too old for this game?” asks Mom. She always shuts me down when I bring up Spanish. </p>
+  <p>Or Argentina, where she and Dad are from. Or pretty much anything about the past. </p>
+  <p>“Too old?” echoes Dad. “Liv, your daughter still hasn’t retired from hide- and-seek—and her list of rules for that game is longer than thConstitu- tion!” </p>
+  <p>They crack matching smirks, and even though I’m used to their ribbing, today the dig stings. </p>
+  <p>From the corner of my eye, the black smoke snakes its way through the other passengers again. I open my mouth to say something, but ivanishes as swiftly as before. </p>
+  <p>Like it’s not actually here. </p>
+  <p>Probably the beginnings of an ocular migraine. I diagnosed myself last week when I started seeing spots in my peripheral vision and lookeup the symptoms online. They don’t last long, so I just have to ignore it. </p>
+  <p>I study the four girls. I can’t help noting how their uniforms hug their bodies, their nails shimmer with glossy colors, their hairstyleframe their faces. I look down at the end of my own frizzy ponytail, my loose Goodwill sweater, Mom’s jeans that are too long on me . . . anI feel a sense of loss for some- thing I can’t name. </p>
+  <p>The old man behind Dad coughs, leaving a spray of red on his clean hand- kerchief. He rolls it up, darting a glance at the woman besidhim, who’s too glued to her phone to notice. She looks like she could be his daughter. </p>
+  <p>“Dad.” My brain tingles with new energy; as if more neurons than usual are firing. Dad calls it my investigative instinct. He says I’m natural. </p>
+  <p>“What is it, Stela?”</p>
+  <p>“That man just coughed blood.”</p>
+  <p>Dad follows my gaze. “What other symptoms have you observed?” “Raul,” chides Mom. “Don’t encourage her.”</p>
+  <p>I focus harder on the elderly man, clocking the way his head lists right, like a partially deflated balloon. Skin sags off him in a waheavier than age, as if he’s dropped a lot of weight fast. “Could be cancer,” I whisper, forgetting to keep my voice down. “Or AIDS—” </p>
+  <p>“Can you save the detective exercises for when we’re back at the hotel?” interjects Mom. </p>
+  <p>“And investigate what?” I ask. “The wallpaper pattern?”</p>
+  <p>Her lips twitches. “So you have to be Sherlock twenty-four seven?” “Dad’s Sherlock. I’m Watson.”</p>
+  <p>Dad smiles, and Mom’s right cheek dimples. The power flickers off and on, but my parents’ expressions don’t dampen.</p>
+  <p>“Did you see that?” I ask. The air begins to dim, like someone is lowering the lights. Or my vision is waning. “I think I’m having aocular—”</p>
+  <p>A blast of smoke overtakes the compartment, burning my words to ashes. I gasp as thick clouds swirl around me, obscuring everything froview. </p>
+  <p>“DAD? MOM?” </p>
+  <p>I can barely hear myself over the rushing of air, and I squeeze my eyes shut to protect them, squinching my nose against the acrid scentDread knots my stomach at my parents’ silence, the oxygen in my lungs thinning as my pulse pummels my chest— </p>
+  <p>The smoke clears suddenly, and I inhale deeply as I open my eyes to an explosion of silver. </p>
+  <p>The starry burst is bright enough that I have to shield my gaze, and once it dissipates to gray mist, the subway looks the same. </p>
+  <p>Literally. </p>
+  <p>Everyone is frozen in place, like the scene inside a snow globe once the particles have settled. </p>
+  <p>The students are still huddled around the phone. The sick man is still clutching the handkerchief in his pocket. My parents’ lips arstill curved up at the ends. </p>
+  <p>I touch Mom’s fingers, but they’re limp. I shake Dad’s arm, digging my nails in, but he doesn’t react. </p>
+  <p>“What’s happening?!” My voice is high and splintering. “WAKE UP!” The train shudders, a warning cry of metal—</p>
+  <p>And twenty-five bodies crash to the floor.</p>
+  <p class="end-mark">⛫</p>
+</div>
+<div class="book-actions">
+  <p>Castle of the Cursed <a href="#Preorder">can now be pre-ordered</a> and will be available on July 30th, 2024.</p>
+  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="#Top" rel="noopener">Back to Top</a>
 </div>
 </body>
 
