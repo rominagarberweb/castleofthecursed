@@ -25,9 +25,13 @@
     margin-left: auto;
     color: var(--rho-aquarius-3);
   }
+  header {
+    z-index: 100;
+  }
   canvas {
     display:block;
     outline: none;
+    z-index:2;
   }
   .preorder {
     display: flex;
@@ -35,9 +39,11 @@
     align-items: center;
     gap: 0px;
     margin-bottom: 2rem;
+    z-index: 501;
   }
   .book-actions {
     justify-content: center;
+    z-index: 502;
   }
   /* Styles for users who prefer dark mode at the OS level */
 @media (prefers-color-scheme: dark) {
