@@ -257,14 +257,11 @@
 <script type="text/javascript">
 
 window.onload = function() {
-
   // Create the renderer and add it to the div with the id of book
   var renderer = new THREE.WebGLRenderer( { alpha: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
-  // renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.setSize(400, 1000);
   const targetElement = document.getElementById('Canvas');
-  // document.body.appendChild( renderer.domElement );
   targetElement.appendChild(renderer.domElement);
   targetElement.setAttribute('alt', 'This is a 3D rendering of a book');
 
@@ -274,25 +271,18 @@ window.onload = function() {
   // Create the camera
   var camera = new THREE.PerspectiveCamera(
     40,                                     // Field of view
-    // window.innerWidth / window.innerHeight, // Aspect ratio
     360 / 800,
     0.1,                                    // Near plane distance
-    1000                                  // Far plane distance
+    1000                                    // Far plane distance
   );
-
-  // Position the camera
   camera.position.set( -15, 10, 20 );
 
-
   // Add the lights
-
   var light = new THREE.PointLight( 0xffffff, .4 );
   light.position.set( 10, 10, 10 );
   scene.add( light );
-
   ambientLight = new THREE.AmbientLight( 0xbbbbbb );
   scene.add( ambientLight );
-
 
   // Load the textures (book images)
   var textureLoader = new THREE.TextureLoader();
@@ -302,7 +292,6 @@ window.onload = function() {
   var bookPagesTexture = textureLoader.load( 'images/pages.png' );
   var bookPagesTopBottomTexture = textureLoader.load( 'images/topbottom.png' );
 
-
   // Use the linear filter for the textures to avoid blurriness
   bookCoverTexture.minFilter
     = bookSpineTexture.minFilter
@@ -311,9 +300,7 @@ window.onload = function() {
     = bookPagesTopBottomTexture.minFilter
     = THREE.LinearFilter;
 
-
   // Create the materials
-
   var bookCover = new THREE.MeshLambertMaterial( { color: 0xffffff, map: bookCoverTexture } );
   var bookSpine = new THREE.MeshLambertMaterial( { color: 0xffffff, map: bookSpineTexture } );
   var bookBack = new THREE.MeshLambertMaterial( { color: 0xffffff, map: bookBackTexture } );
@@ -334,33 +321,73 @@ window.onload = function() {
   scene.add( book );
 
   // Create the orbit controls for the camera
-  controls = new THREE.OrbitControls( camera, renderer.domElement );
+  var controls = new THREE.OrbitControls( camera, renderer.domElement );
   controls.enableDamping = true;
   controls.dampingFactor = 0.25;
   controls.enablePan = false;
   controls.enableZoom = false;
 
+  // --- Custom pointer logic for scroll/rotate threshold ---
+  let pointerDown = false;
+  let startX = 0, startY = 0;
+  let rotating = false;
+  const DRAG_THRESHOLD = 10; // px
+
+  renderer.domElement.addEventListener('pointerdown', function(e) {
+    pointerDown = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    rotating = false;
+    controls.enabled = true; // Always enable so OrbitControls gets pointerdown
+  });
+
+  renderer.domElement.addEventListener('pointermove', function(e) {
+    if (!pointerDown) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!rotating && Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) {
+      // Not enough movement yet
+      return;
+    }
+    if (!rotating) {
+      // Decide if this is a scroll or rotate
+      if (Math.abs(dx) > Math.abs(dy)) {
+        // Horizontal drag: rotate
+        rotating = true;
+        e.preventDefault();
+      } else {
+        // Vertical drag: let page scroll
+        pointerDown = false;
+        controls.enabled = false;
+        // Allow event to bubble (do not preventDefault)
+      }
+    } else {
+      // Already rotating
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  renderer.domElement.addEventListener('pointerup', function(e) {
+    pointerDown = false;
+    controls.enabled = false;
+    rotating = false;
+  });
+
+  renderer.domElement.addEventListener('pointerleave', function(e) {
+    pointerDown = false;
+    controls.enabled = false;
+    rotating = false;
+  });
+  // --- End custom pointer logic ---
+
   // Begin the animation
   animate();
 
-
-  /*
-    Animate a frame
-  */
-
   function animate() {
-
-    // Update the orbit controls
     controls.update();
-
-    // Render the frame
     renderer.render( scene, camera );
-
-    // Keep the animation going
     requestAnimationFrame( animate );
   }
-
-
 }
 
 </script>
@@ -398,7 +425,7 @@ window.onload = function() {
         </a></li>
         <li><a style="color: #734a85;" href="https://bookshop.org/p/books/castle-of-the-cursed-romina-garber/20344537?ean=9781250863898" rel="noopener nofollow">Bookshop
         </a></li>
-      </ul>
+      </ul> 
     </div>
   </div>
   <!-- <p style="font-size:smaller; margin-top: 0;">Available <time datetime="2014-07-30">July 30<sup>th</sup> 2024</time></p>-->
