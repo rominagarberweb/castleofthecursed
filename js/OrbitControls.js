@@ -88,6 +88,9 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.position0 = this.object.position.clone();
 	this.zoom0 = this.object.zoom;
 
+	// track initial touch for allowing vertical page scroll when user swipes vertically
+	var _touchStartX = null, _touchStartY = null;
+
 	//
 	// public methods
 	//
@@ -966,7 +969,14 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		if ( scope.enabled === false ) return;
 
-		event.preventDefault();
+		// Do not preventDefault here. We'll decide in onTouchMove whether to block scrolling
+		// but capture initial touch position for single-touch gestures.
+		if ( event.touches && event.touches.length === 1 ) {
+			_touchStartX = event.touches[0].pageX;
+			_touchStartY = event.touches[0].pageY;
+		} else {
+			_touchStartX = _touchStartY = null;
+		}
 
 		switch ( event.touches.length ) {
 
@@ -1052,7 +1062,23 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		if ( scope.enabled === false ) return;
 
-		event.preventDefault();
+		// For single-touch, allow the browser to handle vertical swipes (page scroll)
+		// unless the gesture is predominantly horizontal. For multi-touch, prevent default.
+		if ( event.touches && event.touches.length === 1 && _touchStartX !== null ) {
+			var deltaX = event.touches[0].pageX - _touchStartX;
+			var deltaY = event.touches[0].pageY - _touchStartY;
+			if ( Math.abs(deltaX) > Math.abs(deltaY) ) {
+				// horizontal gesture -> prevent scrolling and let controls handle it
+				event.preventDefault();
+				// allow propagation to OrbitControls handlers below
+			} else {
+				// vertical gesture -> allow page scroll
+				return;
+			}
+		} else {
+			// multi-touch -> prevent default to allow dolly/pan
+			event.preventDefault();
+		}
 		event.stopPropagation();
 
 		switch ( state ) {

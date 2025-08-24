@@ -16,7 +16,7 @@
 <meta property="og:image:alt" content="Castle of the Cursed book cover">
 <meta name="twitter:image:alt" content="Castle of the Cursed book cover">
 <!-- 3D Book borrowed from https://www.elated.com/articles/rotatable-3d-product-boxshot-threejs/ -->
-<script type="text/javascript" src="js/three.js"></script>
+<script type="text/javascript" src="js/Three.js"></script>
 <script type="text/javascript" src="js/OrbitControls.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rominagarberweb/rominagarber@main/web/_includes/style.css">
 <style>
@@ -87,9 +87,7 @@
     filter: brightness(.7) contrast(1.2);
   }
 
-  svg.social-icon {
-    filter: brightness(1.4);
-  }
+    }
 
   img:hover,
   svg:hover,
@@ -99,7 +97,6 @@
   blockquote p {
     color: var(--general-night-2);
   }
-}
 /* ibm plex sans variable regular */
 @font-face {
   font-family: 'IBM Plex Sans Var Regular';
@@ -255,18 +252,53 @@
 
 </style>
 <script type="text/javascript">
+// Global error reporter (renders errors into the page for easy debugging)
+window.addEventListener('error', function(ev) {
+  try {
+    console.error(ev.error || ev.message);
+    var box = document.getElementById('debug-errors');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'debug-errors';
+      box.style.position = 'fixed';
+      box.style.left = '8px';
+      box.style.right = '8px';
+      box.style.bottom = '8px';
+      box.style.background = 'rgba(255,0,0,0.9)';
+      box.style.color = '#fff';
+      box.style.padding = '8px';
+      box.style.zIndex = 9999;
+      box.style.fontSize = '13px';
+      box.style.maxHeight = '40vh';
+      box.style.overflow = 'auto';
+      document.body.appendChild(box);
+    }
+    box.textContent = (ev.error && ev.error.stack) || ev.message;
+  } catch (e) {
+    console.error('Error while reporting error', e);
+  }
+});
 
 window.onload = function() {
+  console.log('window.onload start');
+  // ...existing code before renderer/controls setup...
+  // ...existing code for renderer, scene, camera, controls setup...
 
+  // ...existing code for renderer, scene, camera, controls setup...
+
+  // ...existing code for renderer, scene, camera, controls setup...
+
+  // ...existing code for renderer, scene, camera, controls setup...
   // Create the renderer and add it to the div with the id of book
   var renderer = new THREE.WebGLRenderer( { alpha: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
-  // renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.setSize(400, 1000);
   const targetElement = document.getElementById('Canvas');
-  // document.body.appendChild( renderer.domElement );
   targetElement.appendChild(renderer.domElement);
   targetElement.setAttribute('alt', 'This is a 3D rendering of a book');
+  console.log('renderer created', renderer);
+  // Allow vertical panning/scrolling on touch devices while keeping pointer events for horizontal drags
+  renderer.domElement.style.touchAction = 'pan-y';
 
   // Create the scene to hold the object
   var scene = new THREE.Scene();
@@ -274,25 +306,18 @@ window.onload = function() {
   // Create the camera
   var camera = new THREE.PerspectiveCamera(
     40,                                     // Field of view
-    // window.innerWidth / window.innerHeight, // Aspect ratio
     360 / 800,
     0.1,                                    // Near plane distance
-    1000                                  // Far plane distance
+    1000                                    // Far plane distance
   );
-
-  // Position the camera
   camera.position.set( -15, 10, 20 );
 
-
   // Add the lights
-
   var light = new THREE.PointLight( 0xffffff, .4 );
   light.position.set( 10, 10, 10 );
   scene.add( light );
-
-  ambientLight = new THREE.AmbientLight( 0xbbbbbb );
+  var ambientLight = new THREE.AmbientLight( 0xbbbbbb, 0.45 );
   scene.add( ambientLight );
-
 
   // Load the textures (book images)
   var textureLoader = new THREE.TextureLoader();
@@ -301,7 +326,7 @@ window.onload = function() {
   var bookBackTexture = textureLoader.load( 'images/back.avif' );
   var bookPagesTexture = textureLoader.load( 'images/pages.png' );
   var bookPagesTopBottomTexture = textureLoader.load( 'images/topbottom.png' );
-
+  console.log('textureLoader created, started loading textures');
 
   // Use the linear filter for the textures to avoid blurriness
   bookCoverTexture.minFilter
@@ -311,14 +336,19 @@ window.onload = function() {
     = bookPagesTopBottomTexture.minFilter
     = THREE.LinearFilter;
 
-
   // Create the materials
-
-  var bookCover = new THREE.MeshLambertMaterial( { color: 0xffffff, map: bookCoverTexture } );
-  var bookSpine = new THREE.MeshLambertMaterial( { color: 0xffffff, map: bookSpineTexture } );
-  var bookBack = new THREE.MeshLambertMaterial( { color: 0xffffff, map: bookBackTexture } );
-  var bookPages = new THREE.MeshLambertMaterial( { color: 0xffffff, map: bookPagesTexture } );
-  var bookPagesTopBottom = new THREE.MeshLambertMaterial( { color: 0xffffff, map: bookPagesTopBottomTexture } );
+  // Use a PBR material for the cover so highlights/specular behave nicely with a moving light
+  var bookCover = new THREE.MeshStandardMaterial( { color: 0xffffff, map: bookCoverTexture, roughness: 0.45, metalness: 0.0 } );
+  // persistent subtle emissive glow so the cover appears to glow even when idle
+  bookCover.emissive = new THREE.Color( 0x734a85 );
+  // emissiveIntensity baseline reduced to keep appearance closer to original artwork
+  bookCover.emissiveIntensity = 0.28;
+  bookCover.needsUpdate = true;
+  // Use MeshStandardMaterial for consistent PBR shading across faces
+  var bookSpine = new THREE.MeshStandardMaterial( { color: 0xffffff, map: bookSpineTexture, roughness: 0.8, metalness: 0.0 } );
+  var bookBack = new THREE.MeshStandardMaterial( { color: 0xffffff, map: bookBackTexture, roughness: 0.8, metalness: 0.0 } );
+  var bookPages = new THREE.MeshStandardMaterial( { color: 0xffffff, map: bookPagesTexture, roughness: 0.95, metalness: 0.0 } );
+  var bookPagesTopBottom = new THREE.MeshStandardMaterial( { color: 0xffffff, map: bookPagesTopBottomTexture, roughness: 0.95, metalness: 0.0 } );
 
   var materials = [
     bookPages,          // Right side
@@ -329,40 +359,180 @@ window.onload = function() {
     bookBack            // Back side
   ];
 
+  // Ensure materials render both sides to avoid disappearing faces due to winding
+  materials.forEach(function(m) { if (m) { m.side = THREE.DoubleSide; } });
+
   // Create the book and add it to the scene
   var book = new THREE.Mesh( new THREE.BoxGeometry( 7, 10, 1.2, 4, 4, 1 ), materials );
   scene.add( book );
 
+  // Create a movable highlight light that will sweep across the book as the view/object rotates
+  var movingLight = new THREE.PointLight( 0xffffff, 0.6, 60, 2 );
+  movingLight.position.set( 10, 4, 10 );
+  scene.add( movingLight );
+
+  // debug bulb removed: movingLight remains a light-only object to avoid visual artifacts
+
+  // Debug helper: enable stronger highlight when URL contains ?debugLight=1
+  try {
+    var DEBUG_HIGHLIGHT = /[?&]debugLight=1/.test(window.location.search);
+    if (DEBUG_HIGHLIGHT) {
+      ambientLight.intensity = 0.12;
+      movingLight.intensity = 2.5;
+      bookCover.roughness = 0.08;
+      bookCover.metalness = 0.02;
+  // stronger emissive when debugging the highlight
+  bookCover.emissive = new THREE.Color(0x734a85);
+  bookCover.emissiveIntensity = 1.0;
+      // also lower other faces roughness so specular is visible
+      [bookSpine, bookBack, bookPages, bookPagesTopBottom].forEach(function(mm){ if(mm){ mm.roughness = 0.6; mm.metalness = 0.0; mm.needsUpdate=true; } });
+      bookCover.needsUpdate = true;
+  // lightBulb was removed; keep this placeholder in case we re-enable a visual helper later
+    }
+  } catch (e) { /* ignore */ }
+
+  // optional small visual helper for the light (disabled by default); enable for debugging
+  // previously had a visible helper mesh for the movingLight; intentionally removed to avoid floating artifact
+
+  // Generate a CPU-side roughness map from the cover image so brighter parts
+  // become shinier under specular lighting. This avoids shader injection and
+  // keeps compatibility across Three.js versions.
+  (function() {
+    try {
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = 'images/cover.avif';
+      img.onload = function() {
+        var w = img.naturalWidth || img.width;
+        var h = img.naturalHeight || img.height;
+        if (!w || !h) return;
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        var imgData = ctx.getImageData(0,0,w,h);
+        var d = imgData.data;
+        for (var i = 0; i < d.length; i += 4) {
+          var r = d[i], g = d[i+1], b = d[i+2];
+          var lum = (0.299*r + 0.587*g + 0.114*b) / 255; // 0..1
+          // Make bright pixels shinier: lower roughness for higher luminance
+          var rough = 1.0 - lum; // invert so bright -> low roughness (shinier)
+          // optional bias/scale to avoid fully mirror-like values
+          rough = rough * 0.9 + 0.05;
+          var v = Math.max(0, Math.min(255, Math.round(rough * 255)));
+          d[i] = d[i+1] = d[i+2] = v;
+          d[i+3] = 255;
+        }
+        ctx.putImageData(imgData, 0, 0);
+        var roughTex = new THREE.CanvasTexture(canvas);
+        roughTex.minFilter = bookCoverTexture.minFilter;
+        roughTex.magFilter = bookCoverTexture.magFilter;
+        roughTex.wrapS = THREE.ClampToEdgeWrapping;
+        roughTex.wrapT = THREE.ClampToEdgeWrapping;
+        roughTex.needsUpdate = true;
+        bookCover.roughnessMap = roughTex;
+        bookCover.roughness = 0.6; // base roughness
+        bookCover.metalness = 0.08; // subtle metallic behavior for highlights
+        bookCover.needsUpdate = true;
+      };
+    } catch (e) {
+      console.warn('Could not create roughness map:', e);
+    }
+  })();
+
   // Create the orbit controls for the camera
-  controls = new THREE.OrbitControls( camera, renderer.domElement );
+  var controls = new THREE.OrbitControls( camera, renderer.domElement );
   controls.enableDamping = true;
   controls.dampingFactor = 0.25;
   controls.enablePan = false;
   controls.enableZoom = false;
+  console.log('controls created', controls);
+
+  // Note: touch handlers removed. Pointer handlers below handle both mouse and touch via pointer events.
+
+  // --- Custom pointer logic for scroll/rotate threshold ---
+  let pointerDown = false;
+  let startX = 0, startY = 0;
+  let rotating = false;
+  const DRAG_THRESHOLD = 10; // px
+
+  renderer.domElement.addEventListener('pointerdown', function(e) {
+    pointerDown = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    rotating = false;
+    controls.enabled = true; // Always enable so OrbitControls gets pointerdown
+  });
+
+  renderer.domElement.addEventListener('pointermove', function(e) {
+    if (!pointerDown) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!rotating && Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) {
+      // Not enough movement yet
+      return;
+    }
+    if (!rotating) {
+      // Decide if this is a scroll or rotate
+      if (Math.abs(dx) > Math.abs(dy)) {
+        // Horizontal drag: rotate
+        rotating = true;
+        e.preventDefault();
+      } else {
+        // Vertical drag: let page scroll
+        pointerDown = false;
+        controls.enabled = false;
+        // Allow event to bubble (do not preventDefault)
+      }
+    } else {
+      // Already rotating
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  renderer.domElement.addEventListener('pointerup', function(e) {
+    pointerDown = false;
+    controls.enabled = false;
+    rotating = false;
+  });
+
+  renderer.domElement.addEventListener('pointerleave', function(e) {
+    pointerDown = false;
+    controls.enabled = false;
+    rotating = false;
+  });
+  // --- End custom pointer logic ---
 
   // Begin the animation
   animate();
 
-
-  /*
-    Animate a frame
-  */
-
   function animate() {
-
-    // Update the orbit controls
+  // small trace to confirm animation loop is running
+  // console.log('animate tick');
     controls.update();
 
-    // Render the frame
-    renderer.render( scene, camera );
+    // move the highlight light so it sweeps across the book as the view rotates
+    if (typeof movingLight !== 'undefined') {
+      var time = performance.now() * 0.001;
+      // use camera position to derive an azimuth so light follows the visible side
+      var camAz = Math.atan2(camera.position.z, camera.position.x);
+      // add a small time-based offset so the light drifts naturally
+      var angle = camAz + Math.sin(time * 0.6) * 0.35;
+      var radius = 12;
+      var lx = Math.cos(angle) * radius;
+      var lz = Math.sin(angle) * radius;
+      var ly = 4 + Math.sin(time * 1.4) * 1.0;
+      movingLight.position.set(lx, ly, lz);
 
-    // Keep the animation going
+  // ramp intensity up while rotating; set a moderate idle baseline to match original image brightness
+  var targetI = rotating ? 1.6 : 0.6;
+      movingLight.intensity += (targetI - movingLight.intensity) * 0.08;
+    }
+
+    renderer.render( scene, camera );
     requestAnimationFrame( animate );
   }
-
-
 }
-
 </script>
 </head>
 
@@ -398,7 +568,7 @@ window.onload = function() {
         </a></li>
         <li><a style="color: #734a85;" href="https://bookshop.org/p/books/castle-of-the-cursed-romina-garber/20344537?ean=9781250863898" rel="noopener nofollow">Bookshop
         </a></li>
-      </ul>
+      </ul> 
     </div>
   </div>
   <!-- <p style="font-size:smaller; margin-top: 0;">Available <time datetime="2014-07-30">July 30<sup>th</sup> 2024</time></p>-->
@@ -406,7 +576,7 @@ window.onload = function() {
 <div class="book-actions">
 
   <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://www.goodreads.com/en/book/show/61304866" rel="noopener">Add to Goodreads</a>
-  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://cdn.sanity.io/images/hic407cy/production/ef4b74fa8a8fda4c5bda930f3a0a5fa49d0b2f70-1875x2849.jpg?dl=book-cover.jpg" rel="noopener">Download large cover image</a>
+  <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://cdn.sanity.io/images/hic407cy/production/30524700b2224fac5f477ec96b5e06965a3d417d-1613x2475.jpg" rel="noopener">Download large cover image</a>
   <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="https://rominagarber.com/books/castle-of-the-cursed/" rel="noopener">Visit Romina&rsquo;s Site</a>
 </div>
 <p class="end-mark">⛫</p>
@@ -468,7 +638,7 @@ window.onload = function() {
 </div>
 <div class="footer">
 <div class="book-actions">
-  <p>Castle of the Cursed <a href="#Preorder">can now be pre-ordered</a> and will be available on July 30th, 2024.</p>
+  <p>Castle of the Cursed <a href="#Preorder">can now be purchased</a> from your local bookseller or online.</p>
   <a class="btn btn--featured-book" style="border-color: #734a85; color: #734a85;" href="#Top" rel="noopener">Back to Top</a>
 </div>
 </div>
